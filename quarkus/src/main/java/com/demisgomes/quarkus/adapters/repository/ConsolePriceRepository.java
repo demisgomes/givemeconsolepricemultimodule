@@ -1,6 +1,6 @@
 package com.demisgomes.quarkus.adapters.repository;
 
-import com.demisgomes.quarkus.adapters.repository.panache.ConsolePricePanacheRepository;
+import com.demisgomes.core.domain.exception.ConsolePriceNotFoundException;
 import com.demisgomes.quarkus.adapters.repository.mapper.ConsolePriceMapper;
 import com.demisgomes.quarkus.adapters.repository.model.ConsolePricePanache;
 import com.demisgomes.core.domain.models.ConsolePrice;
@@ -14,20 +14,22 @@ import javax.transaction.Transactional;
 @Singleton
 public class ConsolePriceRepository implements SaveConsolePriceOutputPort, LoadConsolePriceOutputPort {
     @Inject
-    private ConsolePricePanacheRepository consolePricePanacheRepository;
-    @Inject
     private ConsolePriceMapper consolePriceMapper;
 
 
-    public ConsolePriceRepository(ConsolePricePanacheRepository consolePricePanacheRepository, ConsolePriceMapper consolePriceMapper) {
-        this.consolePricePanacheRepository = consolePricePanacheRepository;
+    public ConsolePriceRepository(ConsolePriceMapper consolePriceMapper) {
         this.consolePriceMapper = consolePriceMapper;
     }
 
     @Override
     public ConsolePrice getById(Integer id) {
-        ConsolePricePanache consolePricePanache = consolePricePanacheRepository.findById(id);
-        return consolePriceMapper.toConsolePrice(consolePricePanache);
+        ConsolePricePanache consolePricePanache = ConsolePricePanache.findById(id);
+
+        if (consolePricePanache != null){
+            return consolePriceMapper.toConsolePrice(consolePricePanache);
+        }
+        else throw new ConsolePriceNotFoundException();
+
     }
 
     @Override
