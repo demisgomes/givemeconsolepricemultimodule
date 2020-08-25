@@ -1,14 +1,14 @@
 package com.demisgomes.quarkus.adapters.config;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.quarkus.jackson.ObjectMapperCustomizer;
-
+import io.quarkus.jsonb.JsonbConfigCustomizer;
 import javax.inject.Singleton;
+import javax.json.bind.JsonbConfig;
 
 @Singleton
-public class ConsolePriceJSONCustomizer implements ObjectMapperCustomizer {
-    public void customize(ObjectMapper mapper) {
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+public class ConsolePriceJSONCustomizer implements JsonbConfigCustomizer {
+
+    @Override
+    public void customize(JsonbConfig jsonbConfig) {
+        jsonbConfig.withNullValues(false);
     }
 }
